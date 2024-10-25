@@ -1,4 +1,4 @@
-# 定義查詢地震資訊的函數
+# 查詢地震資訊
 def earth_quake():
     result = []
     code = 'YOUR-CODE' # 替換成實際的API授權碼(中央氣象局)
