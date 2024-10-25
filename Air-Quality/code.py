@@ -1,4 +1,4 @@
-# 定義查詢空氣品質的函數
+# 查詢空氣品質
 def get_air_quality(address):
     result = '找不到空氣品質資訊'  # 預設結果為找不到資訊
     code = 'YOUR-CODE' # 替換成實際的授權碼(環保署)
