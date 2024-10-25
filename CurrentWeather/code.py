@@ -1,4 +1,4 @@
-# 定義查詢即時天氣的函數
+# 查詢即時天氣
 def get_current_weather(address):
     result = '找不到即時天氣資訊'  # 預設結果為找不到資訊
     code = 'YOUR-CODE'  # 替換成實際的授權碼(中央氣象局)
