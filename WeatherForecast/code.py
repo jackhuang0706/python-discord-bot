@@ -1,6 +1,7 @@
+# 氣象預報
 def get_weather_forecast(address):
     result = '找不到氣象預報資訊'
-    code = 'CWA-66C0912B-B99B-436E-B63B-8005F28532C8'
+    code = 'YOUR-CODE' # 替換成實際的授權碼
     api_list = {
         "宜蘭縣": "F-D0047-001", "桃園市": "F-D0047-005", "新竹縣": "F-D0047-009",
         "苗栗縣": "F-D0047-013", "彰化縣": "F-D0047-017", "南投縣": "F-D0047-021",
@@ -13,7 +14,7 @@ def get_weather_forecast(address):
     }
     try:
         for name in api_list:
-            if name in address:
+            if name in address: # 如果用戶輸入的address包含在API List資料中縣市的文字
                 city_id = api_list[name]
                 url = f'https://opendata.cwa.gov.tw/api/v1/rest/datastore/{city_id}?Authorization={code}&elementName=WeatherDescription'
                 req = requests.get(url)
@@ -27,5 +28,5 @@ def get_weather_forecast(address):
                         result = f'「{address}」的氣象預報：\n{note}'
                         break
     except Exception as e:
-        print(e)
+        print(e) # 除錯用
     return result
