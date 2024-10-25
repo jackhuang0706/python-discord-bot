@@ -1,24 +1,27 @@
-# 設定中文語言包與 Tesseract 路徑（Colab 預設安裝於 /usr/bin/tesseract）
-pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+# 設定中文語言包與 Tesseract 路徑
+pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract' # Colab的預設路徑
 custom_config = r'--oem 3 --psm 6 -l chi_sim+chi_tra'
 
 # 設定 Discord bot token 和 Google Generative AI API 鍵
-TOKEN = 'MTI4Mzk2MDQzMjEyMTM0ODE4OQ.Gn5GJU.vpjce_nu0MoNM9bPmM8Nv6pbfJfjM3BlHbyX2Y'
+TOKEN = 'YOUR-TOKEN' # 替換成實際的Disord Bot API
 API_KEY = os.environ["API_KEY"]
 
 genai.configure(api_key=os.environ["API_KEY"])
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 intents = discord.Intents.default()
-intents.message_content = True  # 允許 bot 讀取訊息內容
-client = discord.Client(intents=intents) # 在這裡傳入 intents 参数
+intents.message_content = True  # 允許bot讀取訊息內容
+client = discord.Client(intents=intents) # 傳入intents參數
 
+# 登錄
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}')
 
+# 訊息處理
 @client.event
 async def on_message(message):
+    # 避免無窮回答
     if message.author == client.user:
         return
 
@@ -26,16 +29,15 @@ async def on_message(message):
  # 檢查是否有圖片附件
     if message.attachments:
         for attachment in message.attachments:
-            if attachment.filename.endswith(('.png', '.jpg', '.jpeg', '.gif')):  # 支援更多圖片格式
+            if attachment.filename.endswith(('.png', '.jpg', '.jpeg', '.gif')):  # 支援圖片格式
                 file_path = f"/content/{attachment.filename}"
                 await attachment.save(file_path)
 
                 try:
-                    # 使用 PIL 開啟圖片並進行 OCR 轉文字
+                    # 開啟圖片並進行OCR轉文字
                     img = Image.open(file_path)
                     text = pytesseract.image_to_string(img, config=custom_config)
 
-                    # 檢查提取的文字是否為空
                     if not text.strip():  # 如果提取內容為空
                         raise ValueError("OCR結果為空")
 
@@ -53,10 +55,12 @@ async def on_message(message):
 
                 finally:
                     os.remove(file_path)  # 刪除臨時文件
-
+                    
+    # 沒有圖片附件
     else:
         address = message.content.split(maxsplit=1)[1] if len(message.content.split()) > 1 else ""
 
+        # 根據指令前綴字執行不同的功能
         if message.content.startswith('&地震'):
             earthquake_info = earth_quake()
             await message.channel.send(earthquake_info[0])
@@ -75,7 +79,7 @@ async def on_message(message):
             air_quality_info = get_air_quality(address)
             await message.channel.send(air_quality_info)
         else:
-            # 啟用聊天功能，將訊息傳遞給 AI 模型
+            # 開始AI聊天
             prompt = message.content.strip()
             try:
                 response = model.generate_content(prompt)
@@ -86,7 +90,7 @@ async def on_message(message):
             except Exception as e:
                 await message.channel.send(f"出錯了: {e}")
 
-    
+    #發送指定，說明機器人功能
     await message.channel.send("--------------------\n")   
     await message.channel.send("指令說明：\n"
                                "(圖片)  - 顯示圖片上的文字\n"
@@ -98,8 +102,9 @@ async def on_message(message):
                                )   
 
 
-# 导入并应用 nest_asyncio
+# 允許執行異步任務
 import nest_asyncio
 nest_asyncio.apply()
 
+#開始執行
 client.run(TOKEN)
