@@ -1,7 +1,7 @@
 # 定義查詢地震資訊的函數
 def earth_quake():
     result = []
-    code = 'YOUR-CODE' #替換成實際的API授權碼(中央氣象局)
+    code = 'YOUR-CODE' # 替換成實際的API授權碼(中央氣象局)
     try:
         # 小區域地震
         url = f'https://opendata.cwa.gov.tw/api/v1/rest/datastore/E-A0016-001?Authorization={code}'
